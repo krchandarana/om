@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Om Jewellers</title>
+    <style>
+        @font-face {
+            font-family: myFont;
+            src: url(NotoSerif-Regular.ttf);
+        }
+
+        * {
+            font-family: myFont;
+        }
+
+        .fixedAtTop {
+            position: fixed;
+            top: 0.3vh;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .otherContent {
+            padding-top: 100px;
+            margin: 0.5vw;
+        }
+
+        #myDIV {
+            top: 0vh;
+            width: 100%;
+            height: 17.7vh;
+            border: 1px solid;
+            border-bottom: 0.2vh solid #FFFFFF;
+            position: fixed;
+            background-image: url('logobg.gif');
+            background-color: #D2BC95;
+            background-position: top center;
+            -webkit-animation: mymove 10s infinite;
+            animation: mymove 10s infinite;
+        }
+
+        @-webkit-keyframes mymove {
+            1% {
+                background-position: top;
+            }
+        }
+
+        @keyframes mymove {
+            1% {
+                background-position: bottom;
+            }
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0vh;
+            width: 100%;
+            height: 7.45vh;
+            background-color: #000000;
+            border-bottom: 0.1vh solid #000000;
+            border-top: 0.2vh solid #000000;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="edit.js"></script>
+
+    <script>
+        // alert(silverRateChange + " " + gold999RateChange + " " + gold22kRateChange);
+        function updateprices() {
+            updateTime();
+
+            // var link="http://www.jksons.co.in/android/prices.php";
+            // var link="https://cors-anywhere.herokuapp.com/jksons.co.in/android/prices.php";
+            // var link = "http://jksons.co.in:3000/pro";
+            var link = "http://bcast.jksons.in:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/jksons";
+            $.ajax({
+                type: 'GET',
+                url: link,
+                crossDomain: true,
+                cache: false,
+                success: function (data) {
+                    // var size = Object.keys(data).length;
+                    var row = data.split('\n');
+                    $.each(row, function (key, val) {
+                        console.log(val)
+                        val.id = val.ID;
+                        val.price = val.PRICE;
+
+                        if (key === 0 || key === 1 || key === 2 || key === 3 || key === 7 ) {
+                        } else {
+                            var cell = val.split('\t');
+                            console.log(key);
+                            if (document.getElementById(key) !== null) {
+                            	console.log(cell);
+	                            oldval = document.getElementById(key).innerHTML;
+	                            if (cell[3] < oldval) {
+	                                document.getElementById(key).innerHTML = cell[3];
+	                                document.getElementById(key).style.color = '#FF3300';
+	                            } else if (cell[3] > oldval) {
+	                                document.getElementById(key).innerHTML = cell[3];
+	                                document.getElementById(key).style.color = "#00FF08";
+	                            } else {
+	                                document.getElementById(key).innerHTML = cell[3];
+	                                document.getElementById(key).style.color = '#FFFFF8';
+	                            }
+                        	}
+						}
+                    });
+                }
+            });
+            var link = "http://bulliontradingbcast.chirayusoft.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/nrjewellers?_=1567442429057";
+            // var link = "https://cors-anywhere.herokuapp.com/http://bulliontradingbcast.chirayusoft.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/nrjewellers?_=1567442429057";
+
+            var futureGold = 0;
+            var futureSilver = 0;
+
+            $.ajax({
+                type: 'GET', url: link,
+                dataType: "text",
+                crossDomain: true,
+                processData: false,
+                cache: false,
+                async: false,
+                success: function (data) {
+
+                    var messages = data.split("\n");
+
+                    var retGold = messages[3].split("\t");
+                    oldvalGold = document.getElementById(10).innerHTML;
+                    futureGold = retGold[4];
+                    if (retGold[4] < oldvalGold) {
+                        document.getElementById(10).innerHTML = retGold[4];
+                        document.getElementById(10).style.color = '#FF3300';
+                    } else if (retGold[4] > oldvalGold) {
+                        document.getElementById(10).innerHTML = retGold[4];
+                        document.getElementById(10).style.color = "#00FF08";
+                    } else {
+                        document.getElementById(10).innerHTML = retGold[4];
+                        document.getElementById(10).style.color = '#FFFFF8';
+                    }
+
+                    // console.log(retGold);
+                    var retSilver = messages[4].split("\t");
+                    oldvalGold = document.getElementById(11).innerHTML;
+                    futureSilver = retSilver[4];
+                    if (retSilver[4] < oldvalGold) {
+                        document.getElementById(11).innerHTML = retSilver[4];
+                        document.getElementById(11).style.color = '#FF3300';
+                    } else if (retSilver[4] > oldvalGold) {
+                        document.getElementById(11).innerHTML = retSilver[4];
+                        document.getElementById(11).style.color = "#00FF08";
+                    } else {
+                        document.getElementById(11).innerHTML = retSilver[4];
+                        document.getElementById(11).style.color = '#FFFFF8';
+                    }
+                    var retGoldFuture = messages[3].split("\t");
+                    oldGoldLow = document.getElementById('goldLow').innerHTML;
+                    if (retGoldFuture[6] < oldGoldLow) {
+                        document.getElementById('goldLow').innerHTML = retGoldFuture[6];
+                        document.getElementById('goldLow').style.color = '#FF3300';
+                    } else if (retGoldFuture[6] > oldGoldLow) {
+                        document.getElementById('goldLow').innerHTML = retGoldFuture[6];
+                        document.getElementById('goldLow').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('goldLow').innerHTML = retGoldFuture[6];
+                        document.getElementById('goldLow').style.color = '#FFFFF8';
+                    }
+
+                    oldGoldHigh = document.getElementById('goldHigh').innerHTML;
+                    if (retGoldFuture[5] < oldGoldHigh) {
+                        document.getElementById('goldHigh').innerHTML = retGoldFuture[5];
+                        document.getElementById('goldHigh').style.color = '#FF3300';
+                    } else if (retGoldFuture[5] > oldGoldHigh) {
+                        document.getElementById('goldHigh').innerHTML = retGoldFuture[5];
+                        document.getElementById('goldHigh').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('goldHigh').innerHTML = retGoldFuture[5];
+                        document.getElementById('goldHigh').style.color = '#FFFFF8';
+                    }
+                    var retSilverFuture = messages[4].split("\t");
+                    oldSilverLow = document.getElementById('silverLow').innerHTML;
+                    if (retSilverFuture[6] < oldSilverLow) {
+                        document.getElementById('silverLow').innerHTML = retSilverFuture[6];
+                        document.getElementById('silverLow').style.color = '#FF3300';
+                    } else if (retSilverFuture[6] > oldSilverLow) {
+                        document.getElementById('silverLow').innerHTML = retSilverFuture[6];
+                        document.getElementById('silverLow').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('silverLow').innerHTML = retSilverFuture[6];
+                        document.getElementById('silverLow').style.color = '#FFFFF8';
+                    }
+                    oldSilverHigh = document.getElementById('silverHigh').innerHTML;
+                    if (retSilverFuture[5] < oldSilverHigh) {
+                        document.getElementById('silverHigh').innerHTML = retSilverFuture[5];
+                        document.getElementById('silverHigh').style.color = '#FF3300';
+                    } else if (retSilverFuture[5] > oldSilverHigh) {
+                        document.getElementById('silverHigh').innerHTML = retSilverFuture[5];
+                        document.getElementById('silverHigh').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('silverHigh').innerHTML = retSilverFuture[5];
+                        document.getElementById('silverHigh').style.color = '#FFFFF8';
+                    }
+
+                    var spotGoldData = messages[0].split("\t");
+                    oldSpotGold = document.getElementById("spotGold").innerHTML;
+                    if (spotGoldData[3] < oldSpotGold) {
+                        document.getElementById('spotGold').innerHTML = spotGoldData[3];
+                        document.getElementById('spotGold').style.color = '#FF3300';
+                    } else if (spotGoldData[3] > oldSpotGold) {
+                        document.getElementById('spotGold').innerHTML = spotGoldData[3];
+                        document.getElementById('spotGold').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotGold').innerHTML = spotGoldData[3];
+                        document.getElementById('spotGold').style.color = '#FFFFF8';
+                    }
+                    oldSpotGoldHigh = document.getElementById("spotGoldHigh").innerHTML;
+                    if (spotGoldData[5] < oldSpotGoldHigh) {
+                        document.getElementById('spotGoldHigh').innerHTML = spotGoldData[5];
+                        document.getElementById('spotGoldHigh').style.color = '#FF3300';
+                    } else if (spotGoldData[5] > oldSpotGoldHigh) {
+                        document.getElementById('spotGoldHigh').innerHTML = spotGoldData[5];
+                        document.getElementById('spotGoldHigh').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotGoldHigh').innerHTML = spotGoldData[5];
+                        document.getElementById('spotGoldHigh').style.color = '#FFFFF8';
+                    }
+                    oldSpotGoldLow = document.getElementById("spotGoldLow").innerHTML;
+                    if (spotGoldData[6] < oldSpotGoldLow) {
+                        document.getElementById('spotGoldLow').innerHTML = spotGoldData[6];
+                        document.getElementById('spotGoldLow').style.color = '#FF3300';
+                    } else if (spotGoldData[6] > oldSpotGoldLow) {
+                        document.getElementById('spotGoldLow').innerHTML = spotGoldData[6];
+                        document.getElementById('spotGoldLow').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotGoldLow').innerHTML = spotGoldData[6];
+                        document.getElementById('spotGoldLow').style.color = '#FFFFF8';
+                    }
+
+
+                    var spotSilverData = messages[1].split("\t");
+                    oldSpotSilver = document.getElementById("spotSilver").innerHTML;
+                    if (spotSilverData[3] < oldSpotSilver) {
+                        document.getElementById('spotSilver').innerHTML = spotSilverData[3];
+                        document.getElementById('spotSilver').style.color = '#FF3300';
+                    } else if (spotSilverData[3] > oldSpotSilver) {
+                        document.getElementById('spotSilver').innerHTML = spotSilverData[3];
+                        document.getElementById('spotSilver').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotSilver').innerHTML = spotSilverData[3];
+                        document.getElementById('spotSilver').style.color = '#FFFFF8';
+                    }
+                    oldSpotSilverHigh = document.getElementById("spotSilverHigh").innerHTML;
+                    if (spotSilverData[5] < oldSpotSilverHigh) {
+                        document.getElementById('spotSilverHigh').innerHTML = spotSilverData[5];
+                        document.getElementById('spotSilverHigh').style.color = '#FF3300';
+                    } else if (spotSilverData[5] > oldSpotSilverHigh) {
+                        document.getElementById('spotSilverHigh').innerHTML = spotSilverData[5];
+                        document.getElementById('spotSilverHigh').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotSilverHigh').innerHTML = spotSilverData[5];
+                        document.getElementById('spotSilverHigh').style.color = '#FFFFF8';
+                    }
+                    oldSpotSilverLow = document.getElementById("spotSilverLow").innerHTML;
+                    if (spotSilverData[6] < oldSpotSilverLow) {
+                        document.getElementById('spotSilverLow').innerHTML = spotSilverData[6];
+                        document.getElementById('spotSilverLow').style.color = '#FF3300';
+                    } else if (spotSilverData[6] > oldSpotSilverLow) {
+                        document.getElementById('spotSilverLow').innerHTML = spotSilverData[6];
+                        document.getElementById('spotSilverLow').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotSilverLow').innerHTML = spotSilverData[6];
+                        document.getElementById('spotSilverLow').style.color = '#FFFFF8';
+                    }
+
+
+                    var spotUsdData = messages[2].split("\t");
+
+                    oldspotUsd = document.getElementById("spotUsd").innerHTML;
+                    if (spotUsdData[3] < oldspotUsd) {
+                        document.getElementById('spotUsd').innerHTML = spotUsdData[3];
+                        document.getElementById('spotUsd').style.color = '#FF3300';
+                    } else if (spotUsdData[3] > oldspotUsd) {
+                        document.getElementById('spotUsd').innerHTML = spotUsdData[3];
+                        document.getElementById('spotUsd').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotUsd').innerHTML = spotUsdData[3];
+                        document.getElementById('spotUsd').style.color = '#FFFFF8';
+                    }
+                    oldspotUsdHigh = document.getElementById("spotUsdHigh").innerHTML;
+                    if (spotUsdData[5] < oldspotUsdHigh) {
+                        document.getElementById('spotUsdHigh').innerHTML = spotUsdData[5];
+                        document.getElementById('spotUsdHigh').style.color = '#FF3300';
+                    } else if (spotUsdData[5] > oldspotUsdHigh) {
+                        document.getElementById('spotUsdHigh').innerHTML = spotUsdData[5];
+                        document.getElementById('spotUsdHigh').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotUsdHigh').innerHTML = spotUsdData[5];
+                        document.getElementById('spotUsdHigh').style.color = '#FFFFF8';
+                    }
+                    oldspotUsdLow = document.getElementById("spotUsdLow").innerHTML;
+                    if (spotUsdData[6] < oldspotUsdLow) {
+                        document.getElementById('spotUsdLow').innerHTML = spotUsdData[6];
+                        document.getElementById('spotUsdLow').style.color = '#FF3300';
+                    } else if (spotUsdData[6] > oldspotUsdLow) {
+                        document.getElementById('spotUsdLow').innerHTML = spotUsdData[6];
+                        document.getElementById('spotUsdLow').style.color = "#00FF08";
+                    } else {
+                        document.getElementById('spotUsdLow').innerHTML = spotUsdData[6];
+                        document.getElementById('spotUsdLow').style.color = '#FFFFF8';
+                    }
+
+                }
+            });
+
+
+            // var link = "https://cors-anywhere.herokuapp.com/http://bcast.goldenleafspot.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/goldenleaf?_=1568552540074";
+            // var link = "http://bcast.goldenleafspot.com:7767/VOTSBroadcastStreaming/Services/xml/GetLiveRateByTemplateID/goldenleaf?_=1568552540074";
+
+
+            oldGoldRetail999 = document.getElementById("goldRetail999").innerHTML;
+            newGoldRetail999Rate = parseInt(futureGold) + gold999RateChange;
+            if (newGoldRetail999Rate < oldGoldRetail999) {
+                document.getElementById('goldRetail999').innerHTML = newGoldRetail999Rate;
+                document.getElementById('goldRetail999').style.color = '#FF3300';
+            } else if (newGoldRetail999Rate > oldGoldRetail999) {
+                document.getElementById('goldRetail999').innerHTML = newGoldRetail999Rate;
+                document.getElementById('goldRetail999').style.color = "#00FF08";
+            } else {
+                document.getElementById('goldRetail999').innerHTML = newGoldRetail999Rate;
+                document.getElementById('goldRetail999').style.color = '#FFFFF8';
+            }
+
+            oldGoldRetail22k = document.getElementById("goldRetail22k").innerHTML;
+            newGoldRetail22k = newGoldRetail999Rate + gold22kRateChange;
+            if (newGoldRetail22k < goldRetail22k) {
+                document.getElementById('goldRetail22k').innerHTML = newGoldRetail22k;
+                document.getElementById('goldRetail22k').style.color = '#FF3300';
+            } else if (newGoldRetail22k > goldRetail22k) {
+                document.getElementById('goldRetail22k').innerHTML = newGoldRetail22k;
+                document.getElementById('goldRetail22k').style.color = "#00FF08";
+            } else {
+                document.getElementById('goldRetail22k').innerHTML = newGoldRetail22k;
+                document.getElementById('goldRetail22k').style.color = '#FFFFF8';
+            }
+
+            oldSilverRetail = document.getElementById("silverRetail").innerHTML;
+            newSilverRetail = parseInt(futureSilver) + silverRateChange;
+            if (newSilverRetail < oldSilverRetail) {
+                document.getElementById('silverRetail').innerHTML = newSilverRetail;
+                document.getElementById('silverRetail').style.color = '#FF3300';
+            } else if (newSilverRetail > oldSilverRetail) {
+                document.getElementById('silverRetail').innerHTML = newSilverRetail;
+                document.getElementById('silverRetail').style.color = "#00FF08";
+            } else {
+                document.getElementById('silverRetail').innerHTML = newSilverRetail;
+                document.getElementById('silverRetail').style.color = '#FFFFF8';
+            }
+
+        }
+
+        function updateTime() {
+            var currentdate = new Date();
+            var hours = currentdate.getHours();
+            var minutes = currentdate.getMinutes();
+            var sec = currentdate.getSeconds();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            var hours = hours % 12;
+            var hours = hours ? hours : 12; // the hour '0' should be '12'
+            var hours = hours < 10 ? '0' + hours : hours;
+            var minutes = minutes < 10 ? '0' + minutes : minutes;
+            var sec = sec < 10 ? '0' + sec : sec;
+            var weekday = new Array(7);
+            weekday[0] = "Sun";
+            weekday[1] = "Mon";
+            weekday[2] = "Tue";
+            weekday[3] = "Wed";
+            weekday[4] = "Thu";
+            weekday[5] = "Fri";
+            weekday[6] = "Sat";
+            var day = weekday[currentdate.getDay()];
+            var Time = hours + ':' + minutes + ':' + sec + ' ' + ampm;
+            var datetime = currentdate.getDate() + "-"
+                + (currentdate.getMonth() + 1) + "-"
+                + currentdate.getFullYear() + " • "
+                + day + " • "
+                + Time;
+            $('#time').text('Dt. ' + datetime);
+        }
+
+        $(document).ready(function () {
+            var link = "http://www.jksons.co.in/android/message.php";
+            $.ajax({
+                type: 'GET', url: link, crossDomain: true,
+                dataType: 'TEXT', cache: false,
+                success: function (data) {
+                    // document.getElementById('mymsg').innerHTML = data;
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    //alert("errorThrown");
+                }
+            });
+            var auto_refresh = setInterval(function () {
+                updateprices();
+
+            }, 2000);
+        })
+
+        function reloadPage() {
+            window.location.href = 'index.html';
+        }
+
+        function openChangeRatePage() {
+            window.location.href = 'edit.html';
+        }
+
+        $(document).ready(function () {
+            var headerHeight = $(".fixedAtTop").height();
+            $(".otherContent").css("padding-top", headerHeight);
+        });
+    </script>
+</head>
+
+
+<div class="fixedAtTop">
+
+    <div style="margin: 0.5vw;">
+        <div style="border : 0.1em  #000001;    border-style: solid; margin: 3.5px;  border-collapse: collapse;border-radius: 0.5em/0.5em;  box-shadow: 0 0 0 1px #FFFFFE, 0 0 0 2px #000000,  0 0 0 3px #FFFFFE, 0 0 0 4px #000000;  overflow: hidden; margin-top: 0.7vh;    outline: 0.0em;   outline-style: dotted; outline-color: #000000;
+  <!--  background-color:#D2BC95;  -->  ">
+            <img src="logo.png" style="height: 9.8vh;width: 100%" alt="Om Jewellers"></div>
+
+        <div style="height: 4.7vh;border: 0.1em solid #FFFFF9;border-collapse: collapse;border-radius: 1em;overflow: hidden;background-color:#D2BC91;margin-top: 1.1vh; vertical-align:middle; text-align: center">
+            <font style="font-weight: 900; font-size: 2.5vh; text-shadow: 1px 0px 0px #FFF,  0px -1px 0px #FFF,  -1px 0px 0px #FFF, 0px 1px 0px #FFF; letter-spacing: 0px; word-spacing: 3px;  line-height: 4vh"
+                  color="#000009" id="time"> </font></div>
+    </div>
+</div>
+
+
+<div id="myDIV"></div>
+
+
+<body style="background-image: url('bg.gif');
+  background-color: #9F844E; height: auto;">
+
+<div class="otherContent">
+
+
+    <!--    <div style="height: 0.2vh;border: 0.05em solid #D2BC95;border-collapse: collapse;border-radius: 0.1em;overflow: hidden;background-color:#000007;margin-top: 0.3vh;">
+        </div>  -->
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #FFFFFE;border-collapse: collapse;border-radius: 1em;  overflow: hidden;background-color:#D2BC96;margin-top: 1.0vh;text-align: center">
+        <font style="font-weight: 700; font-size: 2.6vh; color: #00000D ;  text-shadow: -0px -1px 0px  #ffffff;">
+            <tr>
+                <table height="100%" width="100%">
+                    <tr>
+                        <td colspan="0" style="width: 50%; text-align:center; vertical-align:middle; ">&nbsp;LIVE
+                            RAJKOT
+                        </td>
+                        <td colspan="0"
+                            style="width: 25%; text-align:center; vertical-align:middle;  border-left: 0.2em solid #00000A;">
+                            &nbsp;RATE
+                        </td>
+                        <td colspan="0"
+                            style="width: 25%; text-align:center; vertical-align:middle;  border-left: 0.2em solid #00000A;">
+                            &nbsp;+ / -
+                        </td>
+                    </tr>
+                </table>
+        </font>  </tr>  </div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 700; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size:2.5vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;GOLD</td>
+                    <td style="width: 25%;vertical-align: middle;">&nbsp;999</td>
+                    <td colspan="2" id="4"
+                        style="width: 25%; text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A; ">
+                        -----
+                    <td colspan="" id=""
+                        style="width: 25%; text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 700; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.5vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;SILVER</td>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;CHORSA</td>
+                    <td colspan="2" id="5"
+                        style="width: 25%; text-align:center; vertical-align:middle; ;border-left: 0.2em solid #00000A;">
+                        -----
+                    <td colspan="" id=""
+                        style="width: 25%; text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 700; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.5vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;SILVER</td>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;PETI</td>
+                    <td colspan="2" id="6"
+                        style="width: 25%; text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    <td colspan="" id=""
+                        style="width: 25%; text-align:center; vertical-align:middle;  border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 0.2vh;border: 0.05em solid #FFFFF7;border-collapse: collapse;border-radius: 0.1em;overflow: hidden;background-color:#000007;margin-top: 0.45vh;">
+    </div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #FFFFFE;border-collapse: collapse;border-radius: 1em;overflow: hidden;background-color:#D2BC96;margin-top: 0.45vh;text-align: center">
+        <font style="font-weight: 700;
+text-shadow: -0px -1px 0px  #ffffff;        font-size: 2.6vh" color="#00000D">
+
+            <tr>
+                <table height="100%" width="100%">
+                    <tr>
+                        <td colspan="0" style="width: 50%; text-align:center; vertical-align:middle; ">&nbsp;RETAIL</td>
+                        <td colspan="0"
+                            style="width: 25%; text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                            &nbsp;RATE
+                        </td>
+                        <td colspan="0"
+                            style="width: 25%; text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                            &nbsp;+ / -
+                        </td>
+                    </tr>
+                </table>
+        </font>    </tr>  </div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 700; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.5vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;GOLD</td>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;999</td>
+                    <td colspan="2" id="goldRetail999"
+                        style="width: 25%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td colspan="2" id=""
+                        style="width: 25%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 700; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.5vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;GOLD</td>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;22K/916</td>
+                    <td colspan="2" id="goldRetail22k"
+                        style="width: 25%;  text-align:center; vertical-align:middle;border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td colspan="2" id=""
+                        style="width: 25%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 700; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.5vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;SILVER</td>
+                    <td style="width: 25%; vertical-align: middle; ">&nbsp;999</td>
+                    <td colspan="2" id="silverRetail"
+                        style="width: 25%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td colspan="2" id=""
+                        style="width: 25%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 0.2vh;border: 0.05em solid #FFFFF7;border-collapse: collapse;border-radius: 0.1em;overflow: hidden;background-color:#000007;margin-top: 0.45vh;">
+    </div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #FFFFFE;border-collapse: collapse;border-radius: 1em;overflow: hidden;background-color:#D2BC96;margin-top: 0.45vh;text-align: center">
+        <font style="font-weight: 700; text-shadow: -0px -1px 0px  #ffffff; font-size: 2.2vh"
+              color="#00000D">
+            <table height="100%" width="100%">
+                <tr>
+                    <td colspan="0" style="width: 20%; text-align:center; vertical-align:middle; ">&nbsp;SPOT</td>
+                    <td colspan="0"
+                        style="width: 20%; text-align:center; vertical-align:middle;  border-left: 0.2em solid #00000A;">
+                        &nbsp;RATE
+                    </td>
+                    <td colspan="0"
+                        style="width: 20%; text-align:center; vertical-align:middle;  border-left: 0.2em solid #00000A;">
+                        &nbsp;HIGH
+                    </td>
+                    <td colspan="0"
+                        style="width: 20%; text-align:center; vertical-align:middle;  border-left: 0.2em solid #00000A;">
+                        &nbsp;LOW
+                    </td>
+                    <td colspan="0"
+                        style="width: 20%;   text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        &nbsp;+ / -
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 600; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.2vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+
+                </tr>
+                <tr style="background-color: #383838">
+                    <td style="width: 20%;  text-align:left; vertical-align:middle; ">&nbsp;GOLD
+                    </td>
+                    <td id="spotGold"
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id="spotGoldHigh"
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id="spotGoldLow"
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id=""
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 600; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.2vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 20%;  text-align:left; vertical-align:middle;">&nbsp;SILVER</td>
+                    <td id="spotSilver"
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id="spotSilverHigh"
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id="spotSilverLow"
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id=""
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.35vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 600; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.2vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 20%;  text-align:left; vertical-align:middle; ">&nbsp;INR</td>
+                    <td id="spotUsd"
+                        style="width: 20%;   text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id="spotUsdHigh"
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id="spotUsdLow"
+                        style="width: 20%;   text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                    <td id=""
+                        style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        -----
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 0.2vh;border: 0.05em solid #FFFFF7;border-collapse: collapse;border-radius: 0.1em;overflow: hidden;background-color:#000007;margin-top: 0.45vh;">
+    </div>
+
+
+    <div style="height: 4.3vh;border: 0.0em solid #FFFFFE;border-collapse: collapse;border-radius: 1em;overflow: hidden;background-color:#D2BC96;margin-top: 0.45vh;text-align: center">
+        <font style="font-weight: 700; text-shadow: -0px -1px 0px  #ffffff; font-size: 2.2vh"
+              color="00000D">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 20%;  text-align:center; vertical-align:middle; ">&nbsp;FUTURE</td>
+                    <td style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        &nbsp;RATE
+                    </td>
+                    <td style="width: 20%; text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        &nbsp;HIGH
+                    </td>
+                    <td style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        &nbsp;LOW
+                    </td>
+                    <td style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                        &nbsp;+ / -
+                    </td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.30vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 600; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.2vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 20%;  text-align:left; vertical-align:middle; ">&nbsp;GOLD</td>
+                    <td id="10"
+                        style="width: 20%;  border-left: 0.2em solid #00000A;vertical-align: middle;text-align: center;">
+                        -----
+                    </td>
+                    <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                        <span id="goldHigh">-----</span></td>
+                    <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                        <span id="goldLow">-----</span></td>
+                    <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                        <span id="">-----</span></td>
+                </tr>
+            </table>
+        </font></div>
+
+
+    <div style="height: 4.30vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+        <font style="font-weight: 600; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.2vh"
+              color="#D2BC96">
+            <table height="100%" width="100%">
+                <tr>
+                    <td style="width: 20%;  text-align:left; vertical-align:middle; ">&nbsp;SILVER</td>
+                    <td id="11"
+                        style="width: 20%;  border-left: 0.2em solid #00000A;vertical-align: middle;text-align: center">
+                        -----
+                    </td>
+                    <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                        <span id="silverHigh">-----</span></td>
+                    <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                        <span id="silverLow">-----</span></td>
+                    <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                        <span id="">-----</span></td>
+                </tr>
+            </table>
+        </font></div>
+</div>
+
+
+<div style="height: 0.2vh;border: 0.05em solid #FFFFF7;border-collapse: collapse;border-radius: 0.1em;overflow: hidden; background-color:#000007;  margin-top: 0.45vh;">
+</div>
+
+
+<div style="height: 4.3vh;border: 0.0em solid #FFFFFE;border-collapse: collapse;border-radius: 1em;overflow: hidden;background-color:#D2BC96;margin-top: 0.45vh;text-align: center">
+    <font style="font-weight: 700; text-shadow: -0px -1px 0px  #ffffff; font-size: 2.2vh"
+          color="#00000D">
+        <table height="100%" width="100%">
+            <tr>
+                <td style="width: 20%; text-align:center; vertical-align:middle; ">&nbsp;NEXT</td>
+                <td style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                    &nbsp;RATE
+                </td>
+                <td style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                    &nbsp;HIGH
+                </td>
+                <td style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                    &nbsp;LOW
+                </td>
+                <td style="width: 20%;  text-align:center; vertical-align:middle; border-left: 0.2em solid #00000A;">
+                    &nbsp;+ / -
+                </td>
+            </tr>
+        </table>
+    </font></div>
+
+
+<div style="height: 4.30vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+    <font style="font-weight: 600;
+text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.2vh"
+          color="#D2BC96">
+        <table height="100%" width="100%">
+            <tr>
+                <td style="width: 20%;  text-align:left; vertical-align:middle; ">&nbsp;GOLD</td>
+                <td id="10"
+                    style="width: 20%;  border-left: 0.2em solid #00000A;vertical-align: middle;text-align: center;">
+                    -----
+                </td>
+                <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                    <span id="goldHigh">-----</span></td>
+                <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                    <span id="goldLow">-----</span></td>
+                <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                    <span id="">-----</span></td>
+            </tr>
+        </table>
+    </font></div>
+
+
+<div style="height: 4.30vh;border: 0.0em solid #D2BC95;border-collapse: collapse;border-radius: 0.5em;overflow: hidden;background-color:#383838;margin-top: 0.45vh;">
+    <font style="font-weight: 600;
+text-shadow: 1px 0px 0px #000, 0px -1px 0px #000,  -1px 0px 0px #000, 0px 1px 0px #000; font-size: 2.2vh"
+          color="#D2BC96">
+        <table height="100%" width="100%">
+            <tr>
+                <td style="width: 20%; text-align:left; vertical-align:middle; ">&nbsp;SILVER</td>
+                <td id="11"
+                    style="width: 20%;  border-left: 0.2em solid #00000A;vertical-align: middle;text-align: center">
+                    -----
+                </td>
+                <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                    <span id="silverLow">-----</span></td>
+                <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                    <span id="silverHigh">-----</span></td>
+                <td style="vertical-align: middle;text-align: center; width: 20%;  border-left: 0.2em solid #00000A;">
+                    <span id="">-----</span></td>
+            </tr>
+        </table>
+    </font></div>
+<div style="height: 0.2vh;border: 0.05em solid #FFFFF7;border-collapse: collapse;border-radius: 0.1em;overflow: hidden;background-color:#000007; margin-top: 0.45vh; margin-bottom: 0.0vh">
+</div>
+</div>
+
+
+
+    <div style="height: 4.3vh;border: 0.0em solid #FFFFFE;border-collapse: collapse;border-radius: 1em;overflow: hidden;background-color:#D2BC96;margin-top: 0.45vh;text-align: center">
+    <font style="font-weight: 900; font-size: 3.0vh; text-shadow: 1px 0px 0px #FFF,  0px -1px 0px #FFF,  -1px 0px 0px #FFF, 0px 1px 0px #FFF; letter-spacing: 0px; word-spacing: 3px;  line-height: 4vh"
+                  color="#000009">
+        <marquee style="line-height: 4vh" id="mymsg" scrollamount="3">• રમેશભાઈ • ૐ જ્વેલર્સ • મેઘપર •
+        </marquee>
+        </font></div>
+
+
+<div style="height: 0.2vh;border: 0.05em solid #FFFFF7;border-collapse: collapse;border-radius: 0.1em;overflow: hidden; background-color:#000007;  margin-top: 0.45vh; margin-bottom: 7.5vh">
+</div>
+
+
+<div class="footer">
+    <div style="width:100%; margin-top:0.2vh; margin-bottom:0.3vh; border-bottom: 0vh solid #D2BC96; border-top: 0vh solid #D2BC96; height: 5vh; background-color:#D2BC96; color:#D2BC96;">
+        <tr>
+            <td style="text-align: center; background-color: #D2BC96;">
+                <input type="button" onclick="window.location.href = 'index.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh;background-color: #D2BC96; color: #D2BC96; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000, -1px 0px 0px #000, 0px 1px 0px #000; float:left; width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #000000; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Live">
+            </td>
+            <td style="text-align: center">
+                <input type="button" onclick="window.location.href = 'link.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #000000;  color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96,  -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Link">
+            </td>
+            <td style="text-align: center">
+                <input type="button" onclick="window.location.href = 'edit.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #000000;  color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96,  -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Edit">
+            </td>
+            <!--            <td style="text-align: center">-->
+            <!--                <input type="button" onclick="window.location.href = 'index1.html'"-->
+            <!--                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #000000; color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96, -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"-->
+            <!--                       value="Theme">-->
+            <!--            </td>-->
+            <td style="text-align: center">
+                <input type="button" onclick="window.location.href = 'data.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #000000; color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96, -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Data">
+            </td>
+        </tr>
+    </div>
+
+    <div style="width:100%; margin-top:0vh; margin-bottom:0vh; border-bottom: 0.1vh solid #D2BC96; border-top: 0vh solid #D2BC96; height: 1.65vh; background-color:#000000;">
+        <tr>
+            <td style="text-align: center; vertical-align: middle;">
+                <font style="font-weight: 500; text-shadow: -2px -2px 2px rgba(255,255,255,.1), 2px 2px 2px rgba(0,0,0,.1); font-size: 1.2vh; color:#FFFFFF;">
+                    <p style="margin-top:0vh; margin-bottom:0vh;">RK Chandarana</p>
+                </font>
+            </td>
+        </tr>
+    </div>
+</div>
+</font>
+</body>
+</html>
+
+
+

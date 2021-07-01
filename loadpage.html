@@ -1,0 +1,55 @@
+<html>
+<script src="jquery-latest.js" type="text/javascript"></script>
+<script>
+$(document).ready( function() {
+
+if (Android.GetSP("FirstRun","True")=='False' && Android.GetSP("Reg","False")=='True') {
+	window.location.href='file:///android_asset/index.html';
+	return;
+} 
+
+if (Android.GetSP("FirstRun","True")=='False' && Android.GetSP("Reg","False")=='False') { 
+	var link="http://www.jksons.co.in/android/chkreg.php";
+	var mno=Android.GetSP('Mobile','');
+	$.ajax({
+		type: 'GET', url: link,  
+		crossDomain: true,
+		data: {number: mno},
+		dataType: 'TEXT',
+		success: function(data) {
+			if (data=="OK") {
+				Android.SetSP("Mobile",mno);
+				Android.SetSP("FirstRun","False");
+				Android.SetSP("Reg","True");
+				Android.showToast("Thanks for registering your self.");
+				window.location='index.html';
+			} else {
+				Android.SetSP("Mobile",mno);
+				Android.SetSP("FirstRun","False");
+				Android.SetSP("Reg","False");
+				window.location='index.html';
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown){
+         	Android.SetSP("Mobile",mno);
+			Android.SetSP("FirstRun","False");
+			Android.SetSP("Reg","False");
+			Android.showAlert(errorThrown);
+        }
+	});
+}
+
+if (Android.GetSP("FirstRun","True")=='True' && Android.GetSP("Reg","False")=='False') {
+	window.location.href='file:///android_asset/index.html';
+	return;
+} 
+
+if (Android.GetSP("FirstRun","True")=='False' && Android.GetSP("Reg","False")=='True' && Android.GetSP("Mobile","")) {
+	window.location.href='file:///android_asset/index.html';
+	return;
+} 
+
+
+});
+</script>
+</html>

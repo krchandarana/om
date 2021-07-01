@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <style>
+        @font-face {
+            font-family: myFont;
+            src: url(NotoSerif-Regular.ttf);
+        }
+
+        * {
+            font-family: myFont;
+        }
+
+        .fixedAtTop {
+            position: fixed;
+            top: 0.3vh;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        body, input {
+            font-size: 18px;
+            font-weight: 700;
+            background-color: #303030;
+            color: #FFFFFF;
+        }
+
+        td {
+            padding-top: 15px;
+        }
+
+        #myDIV {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 18.7vh;
+            border: 0.2vh solid black;
+            border-bottom: 1px solid #FFFFFF;
+            position: fixed;
+            background-image: url('logobg.gif');
+            background-color: #D2AD6D;
+            background-position: top center;
+            -webkit-animation: mymove 10s infinite;
+            animation: mymove 10s infinite;
+        }
+
+        @-webkit-keyframes mymove {
+            1% {
+                background-position: top;
+            }
+        }
+
+        @keyframes mymove {
+            1% {
+                background-position: bottom;
+            }
+        }
+
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0vh;
+            width: 100%;
+            height: 6.9vh;
+            background-color: #000000;
+            border-bottom: 0.1vh solid #000000;
+            border-top: 0.2vh solid #000000;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 18px;
+            font-weight: 700;
+        }
+    </style>
+    <script src="retailRateChange.js"></script>
+    <script>
+        function updateTime() {
+            var currentdate = new Date();
+            var hours = currentdate.getHours();
+            var minutes = currentdate.getMinutes();
+            var sec = currentdate.getSeconds();
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            var hours = hours % 12;
+            var hours = hours ? hours : 12; // the hour '0' should be '12'
+            var hours = hours < 10 ? '0' + hours : hours;
+            var minutes = minutes < 10 ? '0' + minutes : minutes;
+            var sec = sec < 10 ? '0' + sec : sec;
+            var weekday = new Array(7);
+            weekday[0] = "Sun";
+            weekday[1] = "Mon";
+            weekday[2] = "Tue";
+            weekday[3] = "Wed";
+            weekday[4] = "Thu";
+            weekday[5] = "Fri";
+            weekday[6] = "Sat";
+            var day = weekday[currentdate.getDay()];
+            var Time = hours + ':' + minutes + ':' + sec + ' ' + ampm;
+            var datetime = currentdate.getDate() + "-"
+                + (currentdate.getMonth() + 1) + "-"
+                + currentdate.getFullYear() + " • "
+                + day + " • "
+                + Time;
+            $('#time').text('Dt. ' + datetime);
+        }
+
+
+        setInterval(function () {
+            updateTime();
+        }, 1000);
+
+
+        $(document).ready(function () {
+            $("#gold999").val(gold999RateChange);
+            $("#gold22k").val(gold22kRateChange);
+            $("#silver").val(silverRateChange);
+        });
+
+        function saveRateChange() {
+            $.ajax({
+                type: "get",
+                url: serverURL + "/saveRateChange.php",
+                data: $("#rateChangeForm").serialize(), // serializes the form's elements.
+                async: false,
+                success: function (response) {
+                    // console.log(response);
+                    window.location.href = 'index.html';
+                }
+            });
+            window.location.href = 'index.html';
+        }
+    </script>
+</head>
+<body style="margin: 0">
+<div class="fixedAtTop">
+    <div style="margin-top: 0.5vw;">
+        <div style="border : 0.1em  #000001;    border-style: solid; margin: 3.5px;  border-collapse: collapse;border-radius: 0.5em/0.5em;  box-shadow: 0 0 0 1px #FFFFFE, 0 0 0 2px #000000,  0 0 0 3px #FFFFFE, 0 0 0 4px #000000;  overflow: hidden; margin-top: 0.7vh;    outline: 0.0em;   outline-style: dotted; outline-color: #000000;
+               <!--  background-color:#D2AD6D;  -->  ">
+            <img src="logo.png" style="height: 9.8vh;width: 100%" alt="Om Jewellers">
+        </div>
+        <div style="height: 4.7vh;border: 0.1em solid #000009;border-collapse: collapse;border-radius: 1em;overflow: hidden;background-color:#D2BC91;margin-top: 1.1vh; vertical-align:middle; text-align: center">
+            <font style="font-weight: 900; font-size: 2.5vh; text-shadow: 1px 0px 0px #FFF,  0px -1px 0px #FFF,  -1px 0px 0px #FFF, 0px 1px 0px #FFF; letter-spacing: 0px; word-spacing: 3px;  line-height: 4vh"
+                  color="#000009" id="time"> </font>
+        </div>
+    </div>
+</div>
+<div id="myDIV"></div>
+<center>
+
+    <table style="width:100%; margin-top:23vh; background-color:#000000;color:#D2BC96; border:0.2em solid #D2BC96; padding:10px">
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" onclick="window.location.href = 'http://www.pritamspot.com/' "
+                       style="margin-top:0px; margin-bottom:5px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="Pritam Spot">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" onclick="window.location.href = 'http://www.vitraagtrading.com/LiveRates.aspx' "
+                       style="margin-top:0px; margin-bottom:5px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="Vitraag Trading">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button"
+                       onclick="window.location.href = 'http://www.sonibharatkumarhimatlal.com/Liverates.aspx' "
+                       style="margin-top:5px; margin-bottom:5px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="SBH">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" onclick="window.location.href = 'http://m.jksons.co.in/' "
+                       style="margin-top: 5px; margin-bottom:5px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="JK Sons">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" onclick="window.location.href = 'http://www.arhambullion.com/' "
+                       style="margin-top: 5px; margin-bottom:5px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="Arham Bullion">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" onclick="window.location.href = 'http://adinathjewellers.com/liverate.html' "
+                       style="margin-top: 5px; margin-bottom:5px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="Adinath Jewellers">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <input type="button" onclick="window.location.href = 'http://www.somnathspot.com/' "
+                       style="margin-top: 5px; margin-bottom:5px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="Somnath Spot">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align: center;padding-bottom: 15px;">
+                <input type="button" onclick="window.location.href = 'https://m.moneycontrol.com/gu/' "
+                       style="margin-top: 5px; margin-bottom:0px; background-color: #D2BC96;  color: #000000; border: 0.1em solid #000000; border-collapse: collapse;border-radius: 1em;overflow: hidden; box-shadow: 0 0 0 1px #D2BC96; width:93% "
+                       value="Money Control">
+            </td>
+        </tr>
+    </table>
+</center>
+
+<div class="footer">
+    <div style="width:100%; margin-top:0.2vh; margin-bottom:0.2vh; border-bottom: 0vh solid #D2BC96; border-top: 0vh solid #D2BC96; height: 4.9vh; background-color:#D2BC96; color:#D2BC96;">
+        <tr>
+            <td style="text-align: center; background-color: #D2BC96;">
+                <input type="button" onclick="window.location.href = 'index.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #000000; color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96, -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Live">
+            </td>
+            <td style="text-align: center">
+                <input type="button" onclick="window.location.href = 'link.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #D2BC96; color: #D2BC96; text-shadow: 1px 0px 0px #000, 0px -1px 0px #000, -1px 0px 0px #000, 0px 1px 0px #000; float:left; width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #000000; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Link">
+            </td>
+            <td style="text-align: center">
+                <input type="button" onclick="window.location.href = 'edit.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh;background-color: #000000; color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96, -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Edit">
+            </td>
+            <!--            <td style="text-align: center">-->
+            <!--                <input type="button" onclick="window.location.href = 'index1.html'"-->
+            <!--                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #000000; color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96, -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"-->
+            <!--                       value="Theme">-->
+            <!--            </td>-->
+            <td style="text-align: center">
+                <input type="button" onclick="window.location.href = 'data.html'"
+                       style="margin-left:0.5%;margin-right:0.5%;margin-top: 0.4vh; margin-bottom:0vh; background-color: #000000; color: #000000; text-shadow: 1px 0px 0px #D2BC96, 0px -1px 0px #D2BC96, -1px 0px 0px #D2BC96, 0px 1px 0px #D2BC96; float:left;  width:24%; border-collapse: collapse;border-radius: 1em;overflow: hidden; border: 0.1em solid #D2BC96; box-shadow: 0 0 0 1px #000000; line-hight:2vh;"
+                       value="Data">
+            </td>
+        </tr>
+    </div>
+
+    <div style="width:100%; margin-top:0vh; margin-bottom:0vh; border-bottom: 0.1vh solid #D2BC96; border-top: 0vh solid #D2BC96; height: 1.5vh; background-color:#000000;">
+        <tr>
+            <td style="text-align: center; vertical-align: middle;">
+                <font style="font-weight: 500; text-shadow: -2px -2px 2px rgba(255,255,255,.1), 2px 2px 2px rgba(0,0,0,.1); font-size: 1.2vh; color:#FFFFFF;">
+                    <p style="margin-top:0vh; margin-bottom:0vh;">RK Chandarana</p>
+                </font>
+            </td>
+        </tr>
+    </div>
+</div>
+</body>
+</html>
